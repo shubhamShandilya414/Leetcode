@@ -1,45 +1,45 @@
-import java.util.*;
-
 class Solution {
     public boolean canPartition(int[] nums) {
-        int sum = 0;
-        for (int num : nums) {
-            sum += num;
-        }
+        int sum=0;
 
-        // If sum is odd, we cannot partition it into two equal subsets
-        if (sum % 2 != 0) {
+        for(int i=0;i<nums.length;i++){
+            sum+=nums[i];
+
+        }
+        if(sum%2!=0){
             return false;
         }
-
-        // Memoization map: (index, currSum) -> result
-        Boolean[][] dp = new Boolean[nums.length][sum / 2 + 1];
-
-        return helper(0, nums, sum / 2, 0, dp);
+        else
+        return   isPossible(nums,sum/2);
     }
+       boolean isPossible(int [] nums,int sum){
 
-    private boolean helper(int index, int[] nums, int target, int currSum, Boolean[][] dp) {
-        // If we reach the exact target, return true
-        if (currSum == target) {
-            return true;
+        int [][]dp=new int[nums.length+1][sum+1];
+       
+        for(int currsum=1;currsum<=sum;currsum++){
+            dp[0][currsum]=0;
         }
+     for(int i=0;i<nums.length;i++){
+       
+        dp[i][0]=1;
+        
+     }
 
-        // If index is out of bounds or sum exceeds target, return false
-        if (index >= nums.length || currSum > target) {
-            return false;
+// think from first principles and write dp transitions.
+       for(int i=1;i<=nums.length;i++){
+        for(int currsum=1;currsum<=sum;currsum++){
+
+           if(nums[i-1]<=currsum){
+            int include=dp[i-1][currsum-nums[i-1]];
+            int exclude=dp[i-1][currsum];
+            dp[i][currsum] = (include == 1 || exclude == 1) ? 1 : 0;
+           }
+           else{
+            dp[i][currsum]=dp[i-1][currsum];
+           }
+
         }
-
-        // If already computed, return the stored result
-        if (dp[index][currSum] != null) {
-            return dp[index][currSum];
-        }
-
-        // Include current element or skip it
-        boolean include = helper(index + 1, nums, target, currSum + nums[index], dp);
-        boolean exclude = helper(index + 1, nums, target, currSum, dp);
-
-        // Store result in memoization table
-        dp[index][currSum] = include || exclude;
-        return dp[index][currSum];
-    }
+       }
+       return dp[nums.length][sum]==1;
+       }
 }
