@@ -26,11 +26,11 @@ class Solution {
      }
 
 // think from first principles and write dp transitions.
-       for(int i=1;i<=nums.length;i++){
+       for(int i=1;i<nums.length;i++){
         for(int currsum=1;currsum<=sum;currsum++){
 
-           if(nums[i-1]<=currsum){
-            int include=dp[i-1][currsum-nums[i-1]];
+           if(nums[i]<=currsum){
+            int include=dp[i-1][currsum-nums[i]];
             int exclude=dp[i-1][currsum];
             dp[i][currsum] = (include == 1 || exclude == 1) ? 1 : 0;
            }
@@ -40,6 +40,6 @@ class Solution {
 
         }
        }
-       return dp[nums.length][sum]==1;
+       return dp[nums.length-1][sum]==1;
        }
 }
